@@ -1,0 +1,230 @@
+#===============================================================================
+# This is input file of FORTRAN77 program "pecmp08" for modeling post-seismic
+# deformation induced by earthquakes in multi-layered poroelastic media using
+# the Green's function approach. The earthquke source is represented by an
+# arbitrary number of rectangular dislocation planes.
+#
+# written by Rongjiang Wang
+# GeoForschungsZentrum Potsdam
+# e-mail: wang@gfz-potsdam.de
+# phone +49 331 2881209
+# fax +49 331 2881204
+#
+# Last modified: Potsdam, July, 2008
+#
+#################################################################
+##                                                             ##
+## Green's functions should have been prepared with the        ##
+## program "pegrn08" before the program "pecmp08" is started.  ##
+##                                                             ##
+## For local Cartesian coordinate system, the Aki's convention ##
+## is used, that is, x is northward, y is eastward, and z is   ##
+## downward.                                                   ##
+##                                                             ##
+## If not specified otherwise, SI Unit System is used overall! ##
+##                                                             ##
+#################################################################
+#===============================================================================
+# OBSERVATION ARRAY
+# =================
+# 1. selection for irregular observation positions (= 0) or a 1D observation
+#    profile (= 1) or a rectangular 2D observation array (= 2): iposrec
+#
+#    IF (iposrec = 0 for irregular observation positions) THEN
+#
+# 2. number of positions: nrec
+#
+# 3. coordinates of the observations: (lat(i),lon(i)), i=1,nrec
+#
+#    ELSE IF (iposrec = 1 for regular 1D observation array) THEN
+#
+# 2. number of position samples of the profile: nrec
+#
+# 3. the start and end positions: (lat1,lon1), (lat2,lon2)
+#
+#    ELSE IF (iposrec = 2 for rectanglular 2D observation array) THEN
+#
+# 2. number of x samples, start and end values: nxrec, xrec1, xrec2
+#
+# 3. number of y samples, start and end values: nyrec, yrec1, yrec2
+#
+#    sequence of the positions in output data: lat(1),lon(1); ...; lat(nx),lon(1);
+#    lat(1),lon(2); ...; lat(nx),lon(2); ...; lat(1),lon(ny); ...; lat(nx),lon(ny).
+#
+#    Note that the total number of observation positions (nrec or nxrec*nyrec)
+#    should be <= NRECMAX (see pecglob.h)!
+#===============================================================================
+#  0
+#  3
+#   ( 5.0,50.0), ( 6.0,51.0), (5.5, 50.5)
+#
+#  1
+#  51
+#  (0.0,  10.0), (0.0, 15.0)
+#
+  2
+ 101    33.70    35.70
+ 101  -118.00  -115.60
+#===============================================================================
+# OUTPUTS
+# =======
+#
+# 1. select (1/0) output for los displacement (only for snapshots, see below),
+#    x, y, and z-cosines to the INSAR orbit: insar, xlos, ylos, zlos
+#
+#    if this option is selected, the snapshots will include additional data:
+#    LOS_Dsp = los displacement to the given satellite orbit.
+#
+# 2. select (1/0) output for Coulomb stress changes (only for snapshots, see
+#    below): icmb, friction, strike, dip, and rake angles [deg] describing the
+#    uniform regional master fault mechanism, the uniform regional principal
+#    stresses: sigma1, sigma2 and sigma3 [Pa] in arbitrary order (the
+#    orietation of the pre-stress field will be derived by assuming that the
+#    master fault is optimally oriented according the Coulomb failure criterion)
+#
+#    if this option is selected, the snapshots will include additional data:
+#    CMB_Fix, Sig_Fix = Coulomb and normal stress changes on master fault;
+#    CMB_Opt, Sig_Opt = Coulomb and normal stress changes on the post-seismic
+#    optimally oriented fault;
+#    Str_Opt, Dip_Opt, Slp_Opt = strike, dip and rake angles of the optimally
+#    oriented fault.
+#
+# 3. output directory in char format: outdir
+#
+# 4. select outputs for displacement components (1/0 = yes/no): itout(i), i=1,3
+#
+# 5. the file names in char format for the x, y, and z components:
+#    toutfile(i), i=1,3
+#
+# 6. select outputs for stress components (1/0 = yes/no): itout(i), i=4,9
+#
+# 7. the file names in char format for the xx, yy, zz, xy, yz, and zx components:
+#    toutfile(i), i=4,9
+#
+# 8. select outputs for NS and EW tilt components, and block rotation (1/0 = yes/no):
+#    itout(i), i=10,12
+#
+# 9. the file names in char format for the NS tilt (positive if borehole top
+#    tilts to north), EW tilt (positive if borehole top tilts to east), and
+#    block rotation (clockwise positive): toutfile(i), i=10,12
+#
+#10. select outputs for pore pressure, NS, EW and vertical Darcy flux components
+#    (1/0 = yes/no): itout(i), i=13,16
+#
+#11. the file names in char format for pore pressure, NS, EW and vertical (downward
+#    positive) Darcy flux components: toutfile(i), i=13,16
+#
+#    Note that all above outputs are time series with the time window as same
+#    as used for the Green's functions
+#
+#12. number of scenario outputs ("snapshots": spatial distribution of all above
+#    observables at given time points; <= NSCENMAX (see pecglob.h): nsc
+#
+#13. the time [day], and file name (in char format) for the 1. snapshot;
+#14. the time [day], and file name (in char format) for the 2. snapshot;
+#15. ...
+#
+#    Note that all file or directory names should not be longer than 80
+#    characters. Directories must be ended by / (unix) or \ (dos)!
+#===============================================================================
+ 0    -0.072  0.408  -0.910
+ 1     0.700  330.000   90.000  180.000    1.0E+06   -1.0E+06    0.0E+00
+'.\'
+  0           0           0
+  'ux.dat'    'uy.dat'    'uz.dat'
+  0           0           0           0            0           0
+  'sxx.dat'   'syy.dat'   'szz.dat'   'sxy.dat'    'syz.dat'   'szx.dat'
+  0           0           0
+  'tx.dat'    'ty.dat'    'rot.dat'
+  0           0           0           0
+  'p.dat'     'dcx.dat'   'dcy.dat'   'dcz.dat'
+  3
+    0.0  'all000.dat'    |0 years
+   30.5  'all001.dat'    |1 month
+  183.0  'all006.dat'    |6 month
+#===============================================================================
+#
+# GREEN'S FUNCTION DATABASE
+# =========================
+# 1. directory where the Green's functions are stored: grndir
+#
+# 2. file names (without extensions!) for the 16 Green's functions:
+#    3 displacement komponents (uz, ur, ut): green(i), i=1,3
+#    6 stress components (szz, srr, stt, szr, srt, stz): green(i), i=4,9
+#    radial and tangential tilt components measured by a borehole tiltmeter,
+#    and rigid rotation around z-axis (tr, tt, rot): green(i), i=10,12
+#    pore pressure and 3 Darcy flux components (p, dcz, dcr, dct):
+#    green(i), i=13,16
+#
+#    Note that all file or directory names should not be longer than 80
+#    characters. Directories must be ended by / (unix) or \ (dos)! The
+#    extensions of the file names will be automatically considered. They
+#    are ".ep", ".ss", ".ds" and ".cl" denoting the explosion (inflation)
+#    strike-slip, the dip-slip and the compensated linear vector dipole
+#    sources, respectively.
+#
+#===============================================================================
+ '..\pegrnfcts\'
+ 'uz'  'ur'  'ut'
+ 'szz' 'srr' 'stt' 'szr' 'srt' 'stz'
+ 'tr'  'tt'  'rot'
+ 'p'   'dcz' 'dcr' 'dct'
+#===============================================================================
+# RECTANGULAR SUBFAULTS
+# =====================
+# 1. number of subfaults (<= NSMAX in pscglob.h): ns
+#
+# 2. parameters for the 1. rectangular subfault: geographic coordinates
+#    (O_lat, O_lon) [deg] and O_depth [km] of the local reference point on
+#    the present fault plane, length (along strike) [km] and width (along down
+#    dip) [km], strike [deg], dip [deg], rake [deg], number of equi-size fault
+#    patches along the strike (np_st) and along the dip (np_di) (total number of
+#    fault patches = np_st x np_di), and the start time of the rupture; the
+#    following data lines describe the slip distribution on the present sub-
+#    fault:
+#
+#    pos_s[km]  pos_d[km]  slip_along_strike[m]  slip_along_dip[m]  opening[m]
+#
+#    where (pos_s,pos_d) defines the position of the center of each patch in
+#    the local coordinate system with the origin at the reference point:
+#    pos_s = distance along the length (positive in the strike direction)
+#    pos_d = distance along the width (positive in the down-dip direction)
+#
+#
+# 3. ... for the 2. subfault ...
+# ...
+#                   N
+#                  /
+#                 /| strike
+#                +------------------------
+#                |\        p .            \ W
+#                :-\      i .              \ i
+#                |  \    l .                \ d
+#                :90 \  S .                  \ t
+#                |-dip\  .                    \ h
+#                :     \. | rake               \
+#                Z      -------------------------
+#                              L e n g t h
+#
+#    Simulation of a Mogi source:
+#    (1) Calculate deformation caused by three small openning plates (each
+#        causes a third part of the volume of the point inflation) located
+#        at the same depth as the Mogi source but oriented orthogonal to
+#        each other.
+#    (2) Multiply the results by 3(1-nu)/(1+nu), where nu is the Poisson
+#        ratio at the source depth.
+#    The multiplication factor is the ratio of the seismic moment (energy) of
+#    the Mogi source to that of the plate openning with the same volume change.
+#===============================================================================
+# n_faults
+#-------------------------------------------------------------------------------
+  1
+#-------------------------------------------------------------------------------
+# n   O_lat   O_lon    O_depth length   width  strike  dip   np_st np_di start_time
+# [-] [deg]   [deg]    [km]    [km]     [km]   [deg]   [deg] [-]   [-]   [day]
+#     pos_s   pos_d    slp_stk slp_ddip  open
+#     [km]    [km]     [m]     [m]      [m]
+#-------------------------------------------------------------------------------
+  1   34.1134 -116.380 0.0     78.0     15.0  330.0   90.0   1     1     0.0
+      39.0    7.5      -2.4    0.0      0.0
+#================================end of input===================================
