@@ -1,0 +1,144 @@
+#=============================================================================
+# This is input file of FORTRAN77 program "pegrn08" for computing responses
+# (Green's functions) of a multi-layered poro-elastic halfspace to point
+# dislocation sources buried at different depths. All results will be stored in
+# the given directory and provide the necessary data base for the program
+# "pecmp08" for computing time-dependent deformation induced by an earthquake
+# with extended rupture area via linear superposition.
+#
+# written by Rongjiang Wang
+# GeoForschungsZentrum Potsdam
+# e-mail: wang@gfz-potsdam.de
+# phone +49 331 2881209
+# fax +49 331 2881204
+#
+# Last modified: Potsdam, July, 2008
+#
+#################################################################
+##                                                             ##
+## Cylindrical coordinates (Z positive downwards!) are used.   ##
+##                                                             ##
+## If not specified otherwise, SI Unit System is used overall! ##
+##                                                             ##
+#################################################################
+#
+#------------------------------------------------------------------------------
+#
+#	PARAMETERS FOR SOURCE-OBSERVATION CONFIGURATIONS
+#	================================================
+# 1. the uniform depth of the observation points [km];
+# 2. number of (horizontal) observation distances (> 1 and <= nrmax defined in
+#    pegglob.h), start and end distances [km], ratio (>= 1.0) between max. and
+#    min. sampling interval (1.0 for equidistant sampling);
+# 3. number of equidistant source depths (>= 1 and <= nzsmax defined in
+#    pegglob.h), start and end source depths [km];
+#
+#    r1,r2 = minimum and maximum horizontal source-observation
+#            distances (r2 > r1).
+#    zs1,zs2 = minimum and maximum source depths (zs2 >= zs1 > 0).
+#
+#    Note that the same sampling rates dr_min and dzs will be used later by the
+#    program "pecmp08" for discretizing the finite source planes to a 2D grid
+#    of point sources.
+#------------------------------------------------------------------------------
+        7.0
+  101   0.0   300.0  5.0
+   15   0.5    14.5
+#------------------------------------------------------------------------------
+#
+#	PARAMETERS FOR TIME SAMPLING
+#	============================
+# 1. number of time samples (<= ntmax def. in pegglob.h) and time window [days].
+#
+#    Note that nt (> 0) should be power of 2 (the fft-rule). If nt = 1, the
+#    coseismic (t = 0) changes will be computed; If nt = 2, the coseismic
+#    (t = 0) and steady-state (t -> infinity) changes will be computed;
+#    Otherwise, time series for the given time samples will be computed.
+#
+#------------------------------------------------------------------------------
+ 1024   1023.00
+#------------------------------------------------------------------------------
+#
+#	PARAMETERS FOR WAVENUMBER INTEGRATION
+#	=====================================
+# 1. relative accuracy of the wave-number integration (suggested: 0.1 - 0.01)
+#------------------------------------------------------------------------------
+ 0.05
+#------------------------------------------------------------------------------
+#
+#	PARAMETERS FOR OUTPUT FILES
+#	===========================
+#
+# 1. output directory
+# 2. file names for 3 displacement components (uz, ur, ut)
+# 3. file names for 6 stress components (szz, srr, stt, szr, srt, stz)
+# 4. file names for radial and tangential tilt components (as measured by a
+#    borehole tiltmeter) and rigid block rotation (tr, tt, rot)
+# 5. file names for pore pressure and 3 Darcy flux components (p, dcz, dcr, dct)
+#
+#
+#    Note that all file or directory names should not be longer than 80
+#    characters. Directory and subdirectoy names must be separated and ended
+#    by / (unix) or \ (dos)! All file names should be given without extensions
+#    that will be appended automatically by ".ep" for the explosion (inflation)
+#    source, ".ss" for the strike-slip source, ".ds" for the dip-slip source,
+#    and ".cl" for the compensated linear vector dipole source)
+#
+#------------------------------------------------------------------------------
+ './'
+ 'uz'  'ur'  'ut'
+ 'szz' 'srr' 'stt' 'szr' 'srt' 'stz'
+ 'tr'  'tt'  'rot'
+ 'p'   'dcz' 'dcr' 'dct'
+#------------------------------------------------------------------------------
+#
+#	GLOBAL MODEL PARAMETERS
+#	=======================
+# 1. number of data lines of the layered model (<= lmax as defined in pegglob.h),
+#    selection for surface condition (1: unconfined surface (p = 0); 2: confined
+#    surface (dp/dz = 0); 3: unsaturated surface (dp/dt = -rhow*g*v_z), if the 3.
+#    condition is selected, then the near-surface porosity should follow.
+#
+# 2....	parameters of the multilayered model
+#
+#    vp:       P wave velocity under undrained conditions.
+#    vs:       S wave velocity under undrained conditions.
+#    rho:      density under undrained conditions.
+#    Skempton: dimensionless Skempton ratio (the change in pore pressure per
+#              unit change in confining pressure under undrained conditions)
+#    alpha:    dimensionless effective stress coefficient (the change in
+#              pore volume per unit change in bulk volume under drained
+#              conditions). Note that alpha*B = 1 - C_u/C, where C and C_u are
+#              bulk compressibilities under drained and undrained conditions,
+#              respectively.
+#    D:        hydraulic diffusivity (that is about equal to product of the
+#              Darcy conductivity and the bulk modulus; the Darcy conductivity
+#              is equal to the intrinsic permeability devided by the fluid
+#              viscosity).
+#
+#              Note: 0 < alpha*Skempton < 1.
+#
+#
+#    The surface and the upper boundary of the half-space as well as the
+#    interfaces at which the viscoelastic parameters are continuous, are all
+#    defined by a single data line; All other interfaces, at which the
+#    viscoelastic parameters are discontinuous, are all defined by two data
+#    lines (upper-side and lower-side values). This input format could also be
+#    used for a graphic plot of the layered model. Layers which have different
+#    parameter values at top and bottom, will be treated as layers with a
+#    constant gradient, and will be discretised to a number of homogeneous
+#    sublayers. Errors due to the discretisation are limited within about 5%
+#    (changeable, see pegglob.h).
+#------------------------------------------------------------------------------
+  7    1    0.3             |int: no_model_lines, isurface_condition, porosity;
+#------------------------------------------------------------------------------
+# no  depth[km]  vp[km/s]  vs[km/s]  rho[kg/m^3]  Skempton  alpha    D[m^2/s]
+#------------------------------------------------------------------------------
+  1      0.000   6.0000    3.4600    2600.0       0.600     0.800    1.000
+  2     16.000   6.0000    3.4600    2600.0       0.600     0.800    1.000
+  3     16.000   6.7000    3.8700    2800.0       0.600     0.800    0.250
+  4     30.000   6.7000    3.8700    2800.0       0.600     0.800    0.250
+  5     30.000   8.0000    4.6200    3400.0       0.600     0.800    0.050
+  6     50.000   8.0000    4.6200    3400.0       0.600     0.800    0.050
+  7     50.000   8.0000    4.6200    3400.0       0.600     0.800    0.001
+#=======================end of input===========================================
